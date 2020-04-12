@@ -9,4 +9,4 @@ An example program:
     >>>manager.injectLevel(levelData,levelName="Test Level",levelDesc="Cool level")
     >>>manager.save()
 
-Credit goes to cos8o and Absolute for the Mac/Windows encode and decode algorithms. Also credit to JohnP55 for the level inject function
+# Huge credit to cos8o and Absolute for the Mac/Windows encode and decode algorithms. Without them this package couldn't exist

@@ -11,15 +11,14 @@ class GDData(object):
         self.path = path
         self.ccll_path = f"{path}/CCLocalLevels.dat"
         self.ccgm_path = f"{path}/CCGameManager.dat"
-        self.ccll = self.decode(open(self.ccll_path,"rb").read())
-        self.ccgm = self.decode(open(self.ccgm_path,"rb").read())
+        self.ccll = self.decode(open(self.ccll_path,"rb").read()).decode()
+        self.ccgm = self.decode(open(self.ccgm_path,"rb").read()).decode()
 
     def injectLevel(self, levelData, levelName="CCLJect", levelDesc="This level was injected into your CCLocalLevels"):
         levels = self.ccll.split(">k_")
-        payload = f"{header}>k_0</k><d><k>kCEK</k><i>4</i><k>k18</k><i>2</i><k>k2</k><s>{levelName}</s><k>k4</k><s>{levelData}</s><k>k5</k><s>{levelDesc}/s><k>k13</k><t /><k>k21</k><i>2</i><k>k16</k><i>1</i><k>k80</k><i>338</i><k>k81</k><i>23</i><k>k83</k><i>109</i><k>k50</k><i>35</i><k>k48</k><i>23</i><k>kI1</k><r>-1118.36</r><k>kI2</k><r>-366.449</r><k>kI3</k><r>0.7</r><k>kI4</k><i>2</i><k>kI5</k><i>11</i><k>kI7</k><i>1</i><k>kI6</k><d><k>0</k><s>0</s><k>1</k><s>0</s><k>2</k><s>0</s><k>3</k><s>0</s><k>4</k><s>0</s><k>5</k><s>0</s><k>6</k><s>0</s><k>7</k><s>0</s><k>8</k><s>0</s><k>9</k><s>0</s><k>10</k><s>0</s><k>11</k><s>2</s><k>12</k><s>0</s></d></d><k"
-        for i in range(1,len(levels)):
-            l = "<".join(levels[i].split("<")[1:])
-            payload += f">k_{i}<{l}"
+        payload = f"{levels[0]}>k_0</k><d><k>kCEK</k><i>4</i><k>k18</k><i>2</i><k>k2</k><s>{levelName}</s><k>k4</k><s>{levelData}</s><k>k5</k><s>{levelDesc}/s><k>k13</k><t /><k>k21</k><i>2</i><k>k16</k><i>1</i><k>k80</k><i>338</i><k>k81</k><i>23</i><k>k83</k><i>109</i><k>k50</k><i>35</i><k>k48</k><i>23</i><k>kI1</k><r>-1118.36</r><k>kI2</k><r>-366.449</r><k>kI3</k><r>0.7</r><k>kI4</k><i>2</i><k>kI5</k><i>11</i><k>kI7</k><i>1</i><k>kI6</k><d><k>0</k><s>0</s><k>1</k><s>0</s><k>2</k><s>0</s><k>3</k><s>0</s><k>4</k><s>0</s><k>5</k><s>0</s><k>6</k><s>0</s><k>7</k><s>0</s><k>8</k><s>0</s><k>9</k><s>0</s><k>10</k><s>0</s><k>11</k><s>2</s><k>12</k><s>0</s></d></d><k"
+        for idx,v in enumerate(levels):
+            payload += f">k_{idx}<{v.split('<',1)[-1]}"
         self.ccll = payload
 
     def save(self,ccll=True,ccgm=True):
@@ -36,7 +35,7 @@ class GDData(object):
 
 class GDWinData(GDData):
     def __init__(self):
-        super().__init__(self,os.path.join(os.getenv("LOCALAPPDATA"), "GeometryDash"))
+        super().__init__(os.path.join(os.getenv("LOCALAPPDATA"), "GeometryDash"))
 
     def encode(self,data):
         compressed = zlib.compress(data)
@@ -52,8 +51,8 @@ class GDWinData(GDData):
 class GDMacData(GDData):
     MAC_KEY = b"\x69\x70\x75\x39\x54\x55\x76\x35\x34\x79\x76\x5d\x69\x73\x46\x4d\x68\x35\x40\x3b\x74\x2e\x35\x77\x33\x34\x45\x32\x52\x79\x40\x7b"
     def __init__(self):
-        super().__init__(self,os.path.join(os.path.expanduser("~"),"Library/Application Support/GeometryDash"))
         self.cipher = AES.new(GDMacData.MAC_KEY, AES.MODE_ECB)
+        super().__init__(os.path.join(os.path.expanduser("~"),"Library/Application Support/GeometryDash"))
 
     def encode(self,data):
         extra = len(data) % 16
@@ -69,3 +68,8 @@ def newManager():
         return GDMacData()
     else:
         return GDWinData()
+
+if __name__ == '__main__':
+    test = newManager()
+    test.save()
+    test.injectLevel("test")
