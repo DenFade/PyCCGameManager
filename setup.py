@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="PyCCManager",
-    version="0.0.1",
+    version="0.0.2",
     author="Camden Weaver",
     author_email="camden7306@gmail.com",
     description="Manage Geometry Dash game files",
