@@ -18,7 +18,8 @@ class GDData(object):
         levels = self.ccll.split(">k_")
         payload = f"{header}>k_0</k><d><k>kCEK</k><i>4</i><k>k18</k><i>2</i><k>k2</k><s>{levelName}</s><k>k4</k><s>{levelData}</s><k>k5</k><s>{levelDesc}/s><k>k13</k><t /><k>k21</k><i>2</i><k>k16</k><i>1</i><k>k80</k><i>338</i><k>k81</k><i>23</i><k>k83</k><i>109</i><k>k50</k><i>35</i><k>k48</k><i>23</i><k>kI1</k><r>-1118.36</r><k>kI2</k><r>-366.449</r><k>kI3</k><r>0.7</r><k>kI4</k><i>2</i><k>kI5</k><i>11</i><k>kI7</k><i>1</i><k>kI6</k><d><k>0</k><s>0</s><k>1</k><s>0</s><k>2</k><s>0</s><k>3</k><s>0</s><k>4</k><s>0</s><k>5</k><s>0</s><k>6</k><s>0</s><k>7</k><s>0</s><k>8</k><s>0</s><k>9</k><s>0</s><k>10</k><s>0</s><k>11</k><s>2</s><k>12</k><s>0</s></d></d><k"
         for i in range(1,len(levels)):
-            payload += f">k_{i}<{"<".join(levels[i].split("<")[1:])}"
+            l = "<".join(levels[i].split("<")[1:])
+            payload += f">k_{i}<{l}"
         self.ccll = payload
 
     def save(self,ccll=True,ccgm=True):
